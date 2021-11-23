@@ -13,3 +13,5 @@
 *.recipe
 *.obj
 *.pdb
+*.exe
+*.dll
