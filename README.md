@@ -1,4 +1,8 @@
 # fatality-ldr
+
+## **PLEASE MAKE SURE YOU DOWNLOAD LOADER FROM HERE, ALL OTHER SOURCES MAY BE UNTRUSTED.**
+[You can download the latest loader here](https://github.com/notunixian/fatality-ldr/releases)
+
 loader for .gg/stayfatal - fatality.win crack 2021
 
 credits:
