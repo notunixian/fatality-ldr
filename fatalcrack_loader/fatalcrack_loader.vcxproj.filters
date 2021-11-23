@@ -26,5 +26,8 @@
     <ClInclude Include="steam_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fagalitylegacy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
