@@ -10,6 +10,7 @@
 
 #include "legacy.h"
 #include "fagality.h"
+#include <random>
 
 /* required */
 
@@ -185,6 +186,8 @@ void inject_legacy()
 	WriteProcessMemory(steam_handle, steam_module, steam_module_path, sizeof(steam_module_path), nullptr);
 	HANDLE steam_thread = CreateRemoteThread(steam_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, steam_module, 0, 0);
 
+	while ((csgo_handle = get_csgo_handle(), csgo_handle == INVALID_HANDLE_VALUE))
+		Sleep(1000);
 	printf("[+] found csgo.exe\n");
 
 	char csgo1_mod_path[] = "C:/Windows/SysWOW64/ftc_legacy.dll";
@@ -197,9 +200,24 @@ void inject_legacy()
 	Sleep(300000);
 }
 
+void randomizetitle()
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<> distr(0, 51);
+	std::string name = "";
+	char alphabet[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+	for (int i = 0; i < 15; ++i)
+	{
+		name = name + alphabet[distr(mt)];
+		SetConsoleTitleA(name.c_str());
+	}
+}
 
 int main( ) {
-	SetConsoleTitleA("discord.gg/stayfatal");
+
+	randomizetitle();
 
 	SetConsoleTextAttribute(hConsole, 4);
 
@@ -217,7 +235,6 @@ int main( ) {
 		printf( "[-] failed to write to C:/Windows/SysWOW64/ftc_dependency.dll. (missing admin perms?)\n" );
 		return 1;
 	}
-
 
 	if( !write_memory_to_new_file( "C:/Windows/SysWOW64/ftc_steam_module.dll", sizeof( steam_module ), steam_module ) ) {
 		printf( "[-] failed to write to C:/Windows/SysWOW64/ftc_steam_module.dll. (missing admin perms?)\n" );
@@ -245,7 +262,6 @@ int main( ) {
 	std::cin >> option;
 	
 	system("cls");
-
 
 	switch (option)
 	{
