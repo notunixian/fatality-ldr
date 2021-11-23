@@ -147,13 +147,12 @@ void inject_desync()
 
 	printf("[+] found csgo.exe\n");
 
-
 	char csgo1_mod_path[] = "C:/Windows/SysWOW64/fatality_loader.dll";
 	void* csgo1_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo1_module, csgo1_mod_path, sizeof(csgo1_mod_path), nullptr);
 	HANDLE csgo_desync_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
 
-	WaitForSingleObject(csgo_desync_thread, INFINITE);
+	Sleep(60000);
 
 	char csgo_mod_path[] = "C:/Windows/SysWOW64/fatality_module.dll";
 	void* csgo_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
