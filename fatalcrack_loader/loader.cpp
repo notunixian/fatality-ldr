@@ -163,13 +163,13 @@ void inject_legacy()
 	HANDLE csgo_handle = get_csgo_handle();
 	if (csgo_handle != INVALID_HANDLE_VALUE) {
 		TerminateProcess(csgo_handle, 0);
-		MessageBoxA(0, "Please open loader before CS:GO", "", 0);
+		MessageBoxA(0, "Please re-open CS:GO", "", 0);
 	}
 
 	HANDLE steam_handle = get_steam_handle();
 	if (steam_handle == INVALID_HANDLE_VALUE) {
 		MessageBoxA(0, "Please open Steam before loading", "", 0);
-		exit(0);
+		
 	}
 
 	printf("[*] waiting for steam.exe\n");
@@ -178,7 +178,7 @@ void inject_legacy()
 
 	printf("[+] found steam.exe\n");
 
-	char steam_module_path[] = "C:/Windows/SysWOW64/legacy_steam_module.dll";
+	char steam_module_path[] = "C:/Windows/SysWOW64/fatal_legacy_steam_module.dll";
 	void* steam_module = VirtualAllocEx(steam_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(steam_handle, steam_module, steam_module_path, sizeof(steam_module_path), nullptr);
 	HANDLE steam_thread = CreateRemoteThread(steam_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, steam_module, 0, 0);
@@ -194,8 +194,7 @@ void inject_legacy()
 
 	Sleep(1000);
 
-
-	char csgo1_mod_path[] = "C:/Windows/SysWOW64/ftc_legacy.dll";
+	char csgo1_mod_path[] = "C:/Windows/SysWOW64/fatal_legacy.dll";
 	void* csgo1_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo1_module, csgo1_mod_path, sizeof(csgo1_mod_path), nullptr);
 	HANDLE csgo1_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
