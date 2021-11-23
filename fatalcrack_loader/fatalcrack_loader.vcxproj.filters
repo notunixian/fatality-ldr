@@ -26,7 +26,13 @@
     <ClInclude Include="steam_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fagalitylegacy.h">
+    <ClInclude Include="legacy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fatality_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="legacy_steam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,8 @@
 #include "fagality.h"
 #include "steam_module.h"
 #include "fatality_loader.h"
-#include "fagalitylegacy.h"
+#include "legacy.h"
+#include "legacy_steam.h"
 
 DWORD FindProcessId( const std::wstring &processName )
 {
@@ -205,6 +206,7 @@ void inject_legacy()
 	printf("[+] injected ftc legacy\n");
 
 	printf("[+] done\n");
+	Sleep(4000);
 }
 
 int main( ) {
@@ -236,7 +238,7 @@ int main( ) {
 		printf( "[-] failed to write to C:/Windows/SysWOW64/ftc_loader.dll. (missing admin perms?)\n" );
 		return 1;
 	}
-	if (!write_memory_to_new_file("C:/Windows/SysWOW64/fatal_legacy_steam_module.dll", sizeof(steam_module), steam_module))
+	if (!write_memory_to_new_file("C:/Windows/SysWOW64/fatal_legacy_steam_module.dll", sizeof(legacy_steam_module), legacy_steam_module))
 	{
 		printf("[-] failed to write to C:/Windows/SysWOW64/fatal_legacy_steam_module.dll. (missing admin perms?)\n");
 		return 1;
@@ -251,22 +253,24 @@ int main( ) {
 	printf("[1] Inject Desync\n");
 	printf("[2] Inject Legacy\n");
 	printf("[!] Choose option: ");
+	
 	int option;
 	std::cin >> option;
+	
+	system("cls");
+
+
 	switch (option)
 	{
 	case 1:
-		system("cls");
 		inject_desync();
 		break;
 	case 2:
-		system("cls");
 		inject_legacy();
 		break;
 	default:
-		system("cls");
 		printf("[-] Status: Failure: Invalid Selection\n");
 		Sleep(3000);
-		exit(0);
 	}
+	return 0;
 }

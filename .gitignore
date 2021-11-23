@@ -2,3 +2,14 @@
 .vs/fatalcrack_loader/v16/.suo
 .vs/fatalcrack_loader/v16/Browse.VC.db
 .vs/fatalcrack_loader/v16/Solution.VC.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.tlog
+*.ipdb
+*.iobj
+*.log
+*.recipe
+*.obj
+*.pdb
