@@ -147,10 +147,13 @@ void inject_desync()
 
 	printf("[+] found csgo.exe\n");
 
+
 	char csgo1_mod_path[] = "C:/Windows/SysWOW64/fatality_loader.dll";
 	void* csgo1_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo1_module, csgo1_mod_path, sizeof(csgo1_mod_path), nullptr);
-	HANDLE csgo1_legacy_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
+	HANDLE csgo_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
+
+	WaitForSingleObject(csgo_thread, INFINITE);
 
 	char csgo_mod_path[] = "C:/Windows/SysWOW64/fatality_module.dll";
 	void* csgo_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -194,10 +197,11 @@ void inject_legacy()
 	printf("[+] found csgo.exe\n");
 
 	Sleep(60000);
+
 	char csgo1_mod_path[] = "C:/Windows/SysWOW64/fatal_legacy.dll";
 	void* csgo1_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo1_module, csgo1_mod_path, sizeof(csgo1_mod_path), nullptr);
-	HANDLE csgo1_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
+	HANDLE csgo_legacy_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
 
 	printf("[+] wait few minutes to it load completely (console will close itself in 5 minutes)\n");
 
