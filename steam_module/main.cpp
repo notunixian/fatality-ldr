@@ -45,6 +45,12 @@ _CreateProcessW(
 }
 
 unsigned long __stdcall thr(void*) {
+
+    /*
+        From Classy:
+        If you can't figure out how to fucking detour a function then you really shouldn't be compiling this kthx
+    */
+
    // original = (ofunc)DetourFunction((PBYTE)CreateProcessW, (PBYTE)_CreateProcessW);
 
     while (!queue_unload)

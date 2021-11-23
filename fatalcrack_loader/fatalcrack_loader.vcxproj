@@ -148,7 +148,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fagality.h" />
-    <ClInclude Include="fagalitylegacy.h" />
+    <ClInclude Include="fatality_loader.h" />
+    <ClInclude Include="legacy.h" />
+    <ClInclude Include="legacy_steam.h" />
     <ClInclude Include="steam_module.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
