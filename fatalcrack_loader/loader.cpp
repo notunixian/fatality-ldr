@@ -1,11 +1,19 @@
 #include <windows.h>
 #include <iostream>
 #include <tlhelp32.h>
-#include "fagality.h"
+
+/* required */
 #include "steam_module.h"
-#include "fatality_loader.h"
-#include "legacy.h"
 #include "legacy_steam.h"
+
+#include "fatality_loader.h"
+
+#include "legacy.h"
+#include "fagality.h"
+
+/* required */
+
+HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 DWORD FindProcessId( const std::wstring &processName )
 {
@@ -103,76 +111,70 @@ bool write_memory_to_new_file( const CHAR *file, DWORD size, LPCVOID dataBuffer 
 	}
 }
 
+HANDLE csgo_handle = get_csgo_handle();
+HANDLE steam_handle = get_steam_handle();
+
 void inject_desync()
 {
-	HANDLE csgo_handle = get_csgo_handle();
-	if (csgo_handle != INVALID_HANDLE_VALUE) {
-		TerminateProcess(csgo_handle, 0);
-		MessageBoxA(0, "Please open loader before CS:GO", "", 0);
-	}
+	std::cout << R"(
+  _____  ______  _______     ___   _  _____ 
+ |  __ \|  ____|/ ____\ \   / / \ | |/ ____|
+ | |  | | |__  | (___  \ \_/ /|  \| | |     
+ | |  | |  __|  \___ \  \   / | . ` | |     
+ | |__| | |____ ____) |  | |  | |\  | |____ 
+ |_____/|______|_____/   |_|  |_| \_|\_____|
+                                            
+                                                                                                            																			                                                                                   
+        )";
+	std::cout << "\n";
 
-	HANDLE steam_handle = get_steam_handle();
-	if (steam_handle == INVALID_HANDLE_VALUE) {
-		MessageBoxA(0, "Please open Steam before loading", "", 0);
-		exit(0);
-	}
+	SetConsoleTextAttribute(hConsole, 3);
 
-	printf("[*] waiting for steam\n");
 	while ((steam_handle = get_steam_handle(), steam_handle == INVALID_HANDLE_VALUE))
 		Sleep(1000);
 
-	printf("[+] found steam\n");
+	printf("[+] found steam.exe\n");
 
 	char steam_mod_path[] = "C:/Windows/SysWOW64/ftc_steam_module.dll";
 	void* steam_module = VirtualAllocEx(steam_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(steam_handle, steam_module, steam_mod_path, sizeof(steam_mod_path), nullptr);
 	HANDLE steam_thread = CreateRemoteThread(steam_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, steam_module, 0, 0);
 
-	printf("[*] waiting for steam thread to finish\n");
-	WaitForSingleObject(steam_thread, INFINITE);
-
-	printf("[*] waiting for csgo\n");
 	while ((csgo_handle = get_csgo_handle(), csgo_handle == INVALID_HANDLE_VALUE))
 		Sleep(1000);
 
-	printf("[+] found csgo\n");
-
-	Sleep(1000);
+	printf("[+] found csgo.exe\n");
 
 	char csgo1_mod_path[] = "C:/Windows/SysWOW64/ftc_loader.dll";
 	void* csgo1_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo1_module, csgo1_mod_path, sizeof(csgo1_mod_path), nullptr);
 	HANDLE csgo1_legacy_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
 
-	printf("[*] waiting for loader thread to finish\n");
-	WaitForSingleObject(csgo1_legacy_thread, INFINITE);
-
 	char csgo_mod_path[] = "C:/Windows/SysWOW64/ftc_dependency.dll";
 	void* csgo_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo_module, csgo_mod_path, sizeof(csgo_mod_path), nullptr);
 	HANDLE csgo_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo_module, 0, 0);
 
-	printf("[+] Injected ftc desync\n");
+	printf("[+] wait few minutes to it load completely (console will close itself in 5 minutes)\n");
 
-	printf("[+] done\n");
-	Sleep(4000);
+	Sleep(300000);
 }
 
 void inject_legacy()
 {
-	HANDLE csgo_handle = get_csgo_handle();
-	if (csgo_handle != INVALID_HANDLE_VALUE) {
-		TerminateProcess(csgo_handle, 0);
-		MessageBoxA(0, "Please open loader before CS:GO", "", 0);
-	}
+	std::cout << R"(
+  _      ______ _____          _______     __
+ | |    |  ____/ ____|   /\   / ____\ \   / /
+ | |    | |__ | |  __   /  \ | |     \ \_/ / 
+ | |    |  __|| | |_ | / /\ \| |      \   /  
+ | |____| |___| |__| |/ ____ \ |____   | |   
+ |______|______\_____/_/    \_\_____|  |_|   
+                                                                                                               																			                                                                                   
+        )";
+	std::cout << "\n";
 
-	HANDLE steam_handle = get_steam_handle();
-	if (steam_handle == INVALID_HANDLE_VALUE) {
-		MessageBoxA(0, "Please open Steam before loading", "", 0);
-		exit(0);
-	}
+	SetConsoleTextAttribute(hConsole, 3);
 
-	printf("[*] waiting for steam.exe\n");
 	while ((steam_handle = get_steam_handle(), steam_handle == INVALID_HANDLE_VALUE))
 		Sleep(1000);
 
@@ -183,44 +185,32 @@ void inject_legacy()
 	WriteProcessMemory(steam_handle, steam_module, steam_module_path, sizeof(steam_module_path), nullptr);
 	HANDLE steam_thread = CreateRemoteThread(steam_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, steam_module, 0, 0);
 
-	printf("[*] waiting for steam thread to finish\n");
-	WaitForSingleObject(steam_thread, INFINITE);
-
-	printf("[*] waiting for csgo.exe\n");
-	while ((csgo_handle = get_csgo_handle(), csgo_handle == INVALID_HANDLE_VALUE))
-		Sleep(1000);
-
 	printf("[+] found csgo.exe\n");
-
-	Sleep(1000);
-
 
 	char csgo1_mod_path[] = "C:/Windows/SysWOW64/ftc_legacy.dll";
 	void* csgo1_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo1_module, csgo1_mod_path, sizeof(csgo1_mod_path), nullptr);
 	HANDLE csgo1_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo1_module, 0, 0);
 
-	printf("[*] waiting for loader thread to finish\n");
-	WaitForSingleObject(csgo1_thread, INFINITE);
+	printf("[+] wait few minutes to it load completely (console will close itself in 5 minutes)\n");
 
-	printf("[+] injected ftc legacy\n");
-
-	printf("[+] done\n");
-	Sleep(4000);
+	Sleep(300000);
 }
+
 
 int main( ) {
 	SetConsoleTitleA("discord.gg/stayfatal");
-	HANDLE csgo_handle = get_csgo_handle( );
-	if( csgo_handle != INVALID_HANDLE_VALUE ) {
-		TerminateProcess( csgo_handle, 0 );
-		MessageBoxA( 0, "Please open loader before CS:GO", "", 0 );
+
+	SetConsoleTextAttribute(hConsole, 4);
+
+	if (csgo_handle != INVALID_HANDLE_VALUE) {
+		TerminateProcess(csgo_handle, 0);
+		printf("Please open loader before CS:GO\n");
 	}
 
-	HANDLE steam_handle = get_steam_handle( );
-	if( steam_handle == INVALID_HANDLE_VALUE ) {
-		MessageBoxA( 0, "Please open Steam before loading", "", 0 );
-		return 1;
+	if (steam_handle == INVALID_HANDLE_VALUE) {
+		printf("Please open Steam before loading");
+		exit(0);
 	}
 
 	if( !write_memory_to_new_file( "C:/Windows/SysWOW64/ftc_dependency.dll", sizeof( fagality_dll ), fagality_dll ) ) {
@@ -234,10 +224,6 @@ int main( ) {
 		return 1;
 	}
 
-	if( !write_memory_to_new_file( "C:/Windows/SysWOW64/ftc_loader.dll", sizeof( rawData ), rawData ) ) {
-		printf( "[-] failed to write to C:/Windows/SysWOW64/ftc_loader.dll. (missing admin perms?)\n" );
-		return 1;
-	}
 	if (!write_memory_to_new_file("C:/Windows/SysWOW64/fatal_legacy_steam_module.dll", sizeof(legacy_steam_module), legacy_steam_module))
 	{
 		printf("[-] failed to write to C:/Windows/SysWOW64/fatal_legacy_steam_module.dll. (missing admin perms?)\n");
@@ -250,6 +236,7 @@ int main( ) {
 		return 1;
 	}
 
+	SetConsoleTextAttribute(hConsole, 7);
 	printf("[1] Inject Desync\n");
 	printf("[2] Inject Legacy\n");
 	printf("[!] Choose option: ");
