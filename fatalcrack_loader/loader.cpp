@@ -109,6 +109,7 @@ void inject_desync()
 	if (csgo_handle != INVALID_HANDLE_VALUE) {
 		TerminateProcess(csgo_handle, 0);
 		MessageBoxA(0, "Please open loader before CS:GO", "", 0);
+		exit(0);
 	}
 
 	HANDLE steam_handle = get_steam_handle();
@@ -164,6 +165,7 @@ void inject_legacy()
 	if (csgo_handle != INVALID_HANDLE_VALUE) {
 		TerminateProcess(csgo_handle, 0);
 		MessageBoxA(0, "Please re-open CS:GO", "", 0);
+		exit(0);
 	}
 
 	HANDLE steam_handle = get_steam_handle();
