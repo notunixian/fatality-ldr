@@ -11,4 +11,4 @@ greetz:
 vmexit, harden, synergy - cope harder, prove this is a rat now LAWL!
 
 # Improving on the code/making the loader better
-You can improve on any part of the loader by [forking the repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo) and [making a pull request with your fixed/improved code](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
+You can improve on any part of the loader by [forking the repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo) and [making a pull request with your fixed/improved code.](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
