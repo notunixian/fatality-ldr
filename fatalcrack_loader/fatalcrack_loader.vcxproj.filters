@@ -35,5 +35,8 @@
     <ClInclude Include="legacy_steam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="crash_fix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,6 +6,8 @@
 #include "fatality_loader.h"
 #include "legacy.h"
 #include "legacy_steam.h"
+#include <winbase.h>
+#include "crash_fix.h"
 
 DWORD FindProcessId( const std::wstring &processName )
 {
@@ -103,6 +105,15 @@ bool write_memory_to_new_file( const CHAR *file, DWORD size, LPCVOID dataBuffer 
 	}
 }
 
+// TODO: add error checks for this, will remain commented until i do so.
+
+//void open_csgo()
+//{
+//	printf("[+] opening csgo\n");
+//	printf("[!] if you do not see csgo open within 5 seconds, open csgo manually.\n");
+//	WinExec("C:\\Program FIles (x86)\\Steam\\steam.exe -applaunch 730", 0);
+//}
+
 void inject_desync()
 {
 	HANDLE csgo_handle = get_csgo_handle();
@@ -132,13 +143,16 @@ void inject_desync()
 	printf("[*] waiting for steam thread to finish\n");
 	WaitForSingleObject(steam_thread, INFINITE);
 
-	printf("[*] waiting for csgo\n");
+	// open_csgo()
+	printf("[+] waiting for csgo\n");
 	while ((csgo_handle = get_csgo_handle(), csgo_handle == INVALID_HANDLE_VALUE))
 		Sleep(1000);
 
 	printf("[+] found csgo\n");
 
 	Sleep(1000);
+
+	printf("[+] injecting ftc loader");
 
 	char csgo1_mod_path[] = "C:/Windows/SysWOW64/ftc_loader.dll";
 	void* csgo1_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -148,10 +162,23 @@ void inject_desync()
 	printf("[*] waiting for loader thread to finish\n");
 	WaitForSingleObject(csgo1_legacy_thread, INFINITE);
 
+	printf("[+] injecting ftc dependency\n");
+
 	char csgo_mod_path[] = "C:/Windows/SysWOW64/ftc_dependency.dll";
 	void* csgo_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	WriteProcessMemory(csgo_handle, csgo_module, csgo_mod_path, sizeof(csgo_mod_path), nullptr);
 	HANDLE csgo_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo_module, 0, 0);
+
+	printf("[+] injecting ftc clantag crash fix\n");
+
+	// another ghetto thing coming in, too lazy to make the crash fix dll wait for tier0.dll so we just wait 8 seconds
+
+	Sleep(8000);
+
+	char csgo2_mod_path[] = "C:/Windows/SysWOW64/ftc_crash_fix.dll";
+	void* csgo2_module = VirtualAllocEx(csgo_handle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+	WriteProcessMemory(csgo_handle, csgo2_module, csgo2_mod_path, sizeof(csgo2_mod_path), nullptr);
+	HANDLE csgo2_thread = CreateRemoteThread(csgo_handle, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, csgo2_module, 0, 0);
 
 	printf("[+] Injected ftc desync\n");
 
@@ -248,6 +275,11 @@ int main( ) {
 	if (!write_memory_to_new_file("C:/Windows/SysWOW64/fatal_legacy.dll", sizeof(legacy_dll), legacy_dll))
 	{
 		printf("[-] failed to write to C:/Windows/SysWOW64/fatal_legacy.dll. (missing admin perms?)\n");
+		return 1;
+	}
+	if (!write_memory_to_new_file("C:/Windows/SysWOW64/ftc_crash_fix.dll", sizeof(crash_fix), crash_fix))
+	{
+		printf("[-] failed to write to C:/Windows/SysWOW64/ftc_crash_fix.dll. (missing admin perms?)\n");
 		return 1;
 	}
 

@@ -147,6 +147,7 @@
     <ClCompile Include="loader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="crash_fix.h" />
     <ClInclude Include="fagality.h" />
     <ClInclude Include="fatality_loader.h" />
     <ClInclude Include="legacy.h" />
